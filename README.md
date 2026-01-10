@@ -16,11 +16,8 @@ https://docs.google.com/document/d/1qgpq5MiOv3_8xoNp7hCAn9kJKZxz4tlPorBOPfOt00U
 Trello:
 https://trello.com/b/X8miMOfx/global-warfare-mc
 
-Webapp:
-https://gw.getenjoyment.net
-
-Mobile:
-~~https://gw.getenjoyment.net/download~~
+Webapp/Mobile:
+https://bit.ly/globewar
 
 ## filesystem heirarchy
 
