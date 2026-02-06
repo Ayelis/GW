@@ -6,7 +6,7 @@ export * from './state.js';
 // vars: units, territories, paths, tool, touch, player
 // func: initializeTerritories()
 export * from "./renderer.js";
-// func: doCanvasResize(), drawUnitPoint(), drawPath(),
+// func: doCanvasResize(), drawUnitPoint(), drawUnitPic(), drawPath(),
 //		translateView()
 export * from "./interact.js";
 // func: toggleSelect(), buildUnit()

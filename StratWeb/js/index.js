@@ -13,13 +13,21 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 	console.log("paper.view:", paper.view); // Debugging
 
-	// Initialize the game
-	initializeGame();
-	// Add the map
-	initializeTerritories();
+  function loadGame(){
+		// Initialize the game
+		initializeGame(); //js/engine/init.js
+		// Add the map
+		initializeTerritories(); //js/engine/state.js
 
-	// Start the game loop
-	paper.view.onFrame = (event) => {
-		gameLoop(event.delta);
-	};
+		// Start the game loop
+		paper.view.onFrame = (event) => {
+			gameLoop(event.delta); //js/engine/loop.js
+		};
+    
+    // Hide panels [title screen/etc] and show game [game screen]
+		console.log("hiding panels, showing game");
+		$(".panel").hide();
+    $("#game").show();
+  }
+  $("#joinGameButton").click(loadGame);
 });

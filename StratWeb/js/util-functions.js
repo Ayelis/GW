@@ -8,32 +8,27 @@ EventTarget.prototype.addEventListener = function(type, listener, options) {
 };
 
 $(document).ready(function() {
-	// Play the audio when logo is clicked, if not playing already
-		document.getElementById("backgroundMusic")?.play();
+	// Music functionality
+  muteButton = document.getElementById("muteMusic");
+  muteButton.addEventListener("click", () => {
+      document.getElementById("backgroundMusic").muted = !document.getElementById("backgroundMusic").muted;
+			document.getElementById("backgroundMusic").play();
+  });
 
-    // Hide panels initially
+  // Hide panels initially
 	$(".panel").hide();
-	$("#panel1").show();
+	$("#title").show(); //show title screen
 
-    $("#joinGameButton").click(function() {
-        // Stop the audio if it's playing
-				document.getElementById("backgroundMusic")?.pause();
-        // Hide panel1 and show panel2
-		console.log("hiding panels, showing panel 2");
-		$(".panel").hide();
-        $("#panel2").show();
-    });
-
-    //Prevent rightclick menu
-	document.addEventListener("DOMContentLoaded", () => {
-	  // Prevent right-click menu
-	  const map = document.getElementById('mapContainer');
-	  if (map) {
-		map.addEventListener("contextmenu", (e) => {
-		  e.preventDefault();
-		});
-	  } else {
-		console.error("mapContainer not found!");
-	  }
-	});
 });
+
+//Prevent rightclick menu
+const preventMenu = (e) => false;// => e.preventDefault();
+if (document.readyState !== 'loading') {
+  // Document is already ready
+  document.addEventListener("contextmenu", preventMenu);
+} else {
+  // Wait for the DOM to be ready
+  document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("contextmenu", preventMenu);
+  });
+}

@@ -1,5 +1,5 @@
 import { 	DEBUG, Unit, Territory, touch, units, territories,
-			drawUnitPoint }
+			drawUnitPoint, drawUnitPic }
 	from "./index.js";
 //Unit: (id, point, x, y, type, speed, owner, graphic)
 //Territory: (id, owner, terrainType, originCountry, coordinates)
@@ -75,8 +75,9 @@ export function buildUnit(id,pt,units){ //id, point
 		//constructor(id, point, type, speed, owner, graphic)
 		var x=pt.x;
 		var y=pt.y;
-		var dp=drawUnitPoint(x,y,'red');
-		var newUnit = new Unit(id, dp);
+		var dp=drawUnitPoint(x,y,'red'); //js/engine/renderer.js
+		var dp2=drawUnitPic(x,y); //js/engine/renderer.js
+		var newUnit = new Unit(id, dp, dp2); //js/class/unit.js
 		if(newUnit.point!==null)
 			units.push(newUnit);
 		pickUnit(id);
@@ -246,3 +247,12 @@ function onDeselect() {
 
 document.addEventListener('selectionMade', onSelect); // Trigger on selection
 document.addEventListener('selectionCleared', onDeselect); // Trigger on deselect
+
+// Deselect objects when pressing escape
+$(document).on('keydown', function(event) {
+  if (event.key === "Escape") {
+  	unpickAllUnits();
+  	unpickAllLands();
+		document.dispatchEvent(selectionClearedEvent);
+	}
+});

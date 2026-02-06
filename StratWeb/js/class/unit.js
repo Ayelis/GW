@@ -1,14 +1,15 @@
 // units.js
 import { DEBUG } from './index.js';
+import { updateUnitGraphic } from '../engine/renderer.js';
 
 export class Unit {
-	constructor(id, point, type = 3, speed = 1, owner = 0, graphic = null, destination = null) {
+	constructor(id, point, graphic = null, type = 3, speed = 1, owner = 0, destination = null) {
 		this.id = id;
 		this.point = point;
+		this.graphic = graphic;
 		this.type = type; //1 land 2 sea 3 air
 		this.speed = speed;
 		this.owner = owner; //neutral
-		this.graphic = graphic;
 		this.x = point.x;
 		this.y = point.y;
 		this.destination = destination;
@@ -29,12 +30,20 @@ export class Unit {
 			if (DEBUG) console.log("Point reached, stopping!");
 		} else {
 			let step = vector.normalize().multiply(this.speed * delta * 20);
-			this.position = this.position.add(step); // Update logical position
-		}
-
-		// Update the Paper.js circle's position
-		if (this.point) {
-			this.point.position = this.position.clone();
+	    let oldPos = this.position.clone();
+  		this.position = this.position.add(step); // Update logical position
+  		// Update the red dot's position
+  		if (this.point) {
+  			this.point.position = this.position;
+  		}
+  		// Update the image's position
+      if (this.graphic) {
+          this.graphic.position = this.position;
+          // Only update the "tile" if we are actually moving
+          if (step.length > 0.01) {
+              updateUnitGraphic(this, step.angle);
+          }
+      }
 		}
 	}
 }

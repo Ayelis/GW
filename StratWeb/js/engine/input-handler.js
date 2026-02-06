@@ -1,9 +1,13 @@
+// js/engine/input-handler.js
 import { 	DEBUG, touch, units, translateView, doCanvasResize,
 			toggleSelect, buildUnit }
 	from './index.js';
 
 let isPanning = false;
 let startPoint = null;
+let lastPanPoint = null;
+let startZoom = 1;
+let lastZoom = 1;
 const panThreshold = 10; // Min pixels to trigger panning
 
 function doTouch(point){
@@ -63,15 +67,21 @@ function doModeMove(){
 	touch.mode=2;
 }
 function onMouseWheel(event) {
-    let zoomFactor = 1.05; // Zoom factor for each scroll step
+    let newZoom;
+	let additive = true;
+    let zoomFactor = 1.05; // Zoom factor for each multiplicative scroll step
+    let zoomStep = .05; // Zoom step for each additive scroll step
 
     let direction = event.tool.deltaY < 0 ? 1 : -1; // Scroll up: 1 (zoom in), scroll down: -1 (zoom out)
 
     // Calculate new zoom level based on current zoom and direction
-    let newZoom = view.zoom * (direction === 1 ? zoomFactor : 1 / zoomFactor);
+    if(additive)
+	    newZoom = view.zoom + (direction === 1 ? zoomStep : -1 * zoomStep);
+    else
+	    newZoom = view.zoom * (direction === 1 ? zoomFactor : 1 / zoomFactor);
 
-    // Limit zoom range
-    newZoom = Math.max(0.5, Math.min(newZoom, 5)); // Min zoom: 0.5, Max zoom: 5
+    // Limit and round zoom range
+    newZoom = Math.round( Math.max(0.5, Math.min(newZoom, 2.5)) * 100) / 100; // Min zoom: 0.5, Max zoom: 5
 
     // Get the mouse position in view coordinates
     let mousePos = new paper.Point(event.tool.x, event.tool.y);
@@ -85,8 +95,11 @@ function onMouseWheel(event) {
     let scaleFactor = 1 - inverseZoom; // Step 2: Subtract from 1
 
 	let delta = view.center.subtract(mousePosProject).multiply(1 - 1 / zoomRatio);
-    view.zoom = newZoom; // Apply the new zoom
+    view.zoom = newZoom;
     view.translate(delta); // Translate the view to keep the mouse position fixed
+
+    lastZoom = newZoom;
+	if (DEBUG) console.log("Z Level:", lastZoom);
 }
 
 export function setupInputHandlers(tool, button, touch) {
@@ -96,16 +109,32 @@ export function setupInputHandlers(tool, button, touch) {
 		isPanning = false; // Reset panning state
 	}
     tool.onMouseDrag = function(event) {
-		if (!isPanning && startPoint) {
-			let movedDistance = startPoint.getDistance(event.point);
-			if (movedDistance > panThreshold) {
-				isPanning = true; // Enable panning only after threshold is met
-				if (DEBUG) console.log("panning!");
-			}
-		}
-		if (isPanning) {
-			translateView(event.delta); // Call Renderer.js to move the viewport
-		}
+	    if (!isPanning && startPoint) {
+	        const currentPoint = event.point.clone();
+	        const zoomAdjustedThreshold = panThreshold / paper.view.zoom;
+	        let movedDistance = startPoint.getDistance(currentPoint);
+	        
+	        if (movedDistance > zoomAdjustedThreshold) {
+	            isPanning = true;
+	            if (DEBUG) console.log("panning!");
+	            lastPanPoint = currentPoint;
+	        }
+	    }
+	    
+	    if (isPanning) {
+	        // Use browser's native movementX/Y which is more reliable
+			// Scale the movement by inverse zoom to compensate for zoom level
+			const zoomFactor = 1.1 / paper.view.zoom;
+			const delta = new paper.Point(
+				event.event.movementX * zoomFactor,
+				event.event.movementY * zoomFactor
+			);
+	        //const delta = new paper.Point(event.event.movementX, event.event.movementY);
+	        translateView(delta);
+	        
+	        // Still update lastPanPoint for consistency
+	        lastPanPoint = event.point.clone();
+	    }
 	};
     tool.onMouseUp = function(event) {
 		if (!isPanning) {
@@ -152,7 +181,7 @@ export function setupInputHandlers(tool, button, touch) {
 	  });
 	});
 
-	// Close window when close button is clicked or clicking outside
+	// Close panel window when close button is clicked or clicking outside
 	document.querySelectorAll(".window").forEach(window => {
 	  window.addEventListener("click", (event) => {
 		if (event.target.classList.contains("close-btn") || event.target === window) {
@@ -162,7 +191,7 @@ export function setupInputHandlers(tool, button, touch) {
 	  });
 	});
 
-	// Close window when clicking on the overlay
+	// Close panel window when clicking on the overlay
 	document.querySelector(".overlay").addEventListener("click", () => {
 	  document.querySelectorAll(".window").forEach(window => {
 		window.classList.remove("active");
@@ -170,4 +199,11 @@ export function setupInputHandlers(tool, button, touch) {
 	  document.querySelector(".overlay").classList.remove("active");
 	});
 
+	// Close panel window and deselect objects when pressing escape
+	$(document).on('keydown', function(event) {
+    if (event.key === "Escape") {
+  	  $('.window').removeClass("active");
+		  $('.overlay').removeClass("active");
+	  }
+  });
 }

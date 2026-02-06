@@ -23,6 +23,8 @@ const spacing = 0; // Space between territories
 const margin = 10; // Space around territories
 
 export function initializeTerritories() {
+    const mLayer = paper.project.layers['mapLayer'];
+    if (mLayer) mLayer.activate(); 
 	// Create a grid of territories
 	for (let row = 0; row < 5; row++) {
 		for (let col = 0; col < 5; col++) {
@@ -51,7 +53,12 @@ export function initializeTerritories() {
 
 			// Create the Paper.js polygon for the territory
 			territory.createPolygon();
-		}
+      //paper.project.layers[0].addChild(territory.polygon);
+      const tLayer = paper.project.layers['mapLayer'];
+      if (tLayer) {
+          tLayer.addChild(territory.polygon);
+      }
+   	}
 	}
 	console.log("Territories initialized!");
 }

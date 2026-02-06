@@ -19,11 +19,12 @@ button{
 }
 nav {
 	position: absolute;
-	bottom: 1px;
+	bottom: 0px;
 	margin: auto;
 	text-align: center;
 	width: 100%;
 	transition: transform 0.2s ease-in-out; /* Slide animation */
+	background-color:#404040;
 }
 #infoPanel {
 	position: fixed;
@@ -96,6 +97,7 @@ nav button:active {
 	border-radius: 10px; /* Rounded corners */
 	z-index: 1000; /* Ensure it's on top of other elements */
 	overflow-y: auto; /* Add scroll if content overflows */
+	height:50%;
 }
 
 /* Show the window when active */

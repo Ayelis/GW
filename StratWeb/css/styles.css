@@ -19,17 +19,24 @@ body {
 	justify-content: space-between;
 	align-items: center;
 }
-#top {
+.top, #infoBar {
 	flex: 1;
 	display: flex;
-	height: 50vh;
-	justify-content: center;
+	justify-content: space-around;
 	align-items: center;
 }
-#top img {
+#infoBar{
+  background: linear-gradient(to bottom, #909090, #707070);
+  padding:10px;
+  border-bottom: #404040 solid 2px;
+}
+.top img {
+	height: 50vh;
+}
+.top img {
 	height: 45vh;
 }
-#bottom {
+.bottom {
 	flex: 1;
 	display:flex;
 	height: 50vh;
@@ -53,6 +60,7 @@ button {
 	padding: 10px 10px;
 	cursor: pointer;
 	font-family: 'QTMilitary', sans-serif;
+    text-shadow: 1px 1px 1px black;
 }
 #mapContainer{
     width: 100%;
