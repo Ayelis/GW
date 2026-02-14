@@ -1,7 +1,7 @@
 // js/engine/input-handler.js
 import { 	DEBUG, touch, units, translateView, doCanvasResize,
 			toggleSelect, buildUnit }
-	from './index.js';
+	from './engine.js';
 
 let isPanning = false;
 let startPoint = null;
@@ -28,7 +28,7 @@ function doTouch(point){
 			doModeSelect(); //and return to select mode
 		break;
 		case 1: //select object // TOGGLE!!
-			toggleSelect(point);
+			toggleSelect(point); //interact.js
 		break;
 		default: //build unit // ANYWHERE!!
 			let newguy = units.length||0;
@@ -143,14 +143,17 @@ export function setupInputHandlers(tool, button, touch) {
 	}
 	// Add a single event listener to the infoPanel
 	const infoPanel = document.getElementById('infoPanel');
-	infoPanel.addEventListener('click', (event) => {
+  function doInfoPanel(){
 		if (event.target.id === 'build') {
 			doModeBuild();
 		} else if (event.target.id === 'move') {
 			doModeMove();
 		}
-	});
-	window.addEventListener("resize", doCanvasResize);
+	};
+	infoPanel.addEventListener('click', (event) => { doInfoPanel(event); });
+	infoPanel.addEventListener('touch', (event) => { doInfoPanel(event); });
+
+	window.addEventListener("resize", doCanvasResize); //renderer.js
 	document.addEventListener("wheel", (event) => {
 		onMouseWheel(new paper.ToolEvent(event));
 	}, { passive: false });
@@ -161,43 +164,50 @@ export function setupInputHandlers(tool, button, touch) {
 			case "b":doModeBuild();break;
 		}
 	});
-	
-	// Interface Button listeners
-	// Show window when nav button is clicked
-	document.querySelectorAll("nav button").forEach(button => {
-	  button.addEventListener("click", () => {
+
+  function doNavButton(button){
 		const windowId = button.getAttribute("data-window") + "-window";
-		const window = document.getElementById(windowId);
+		const windowPane = document.getElementById(windowId);
 		const overlay = document.querySelector(".overlay");
 
-			if (window && overlay) {
-			  window.classList.add("active");
+			if (windowPane && overlay) {
+			  windowPane.classList.add("active");
 			  overlay.classList.add("active");
 			} else if (overlay) {
 			  console.error("window not found!");
-			} else if (window) {
+			} else if (windowPane) {
 			  console.error("overlay not found!");
 			}
-	  });
+  }
+	// Interface Button listeners
+	// Show window when nav button is clicked
+	document.querySelectorAll("nav button").forEach(button => {
+	  button.addEventListener("click", () => { doNavButton(button); });
+	  button.addEventListener("touch", () => { doNavButton(button); });
 	});
 
 	// Close panel window when close button is clicked or clicking outside
-	document.querySelectorAll(".window").forEach(window => {
-	  window.addEventListener("click", (event) => {
+	function doCloseEvent(windowPane,event){
 		if (event.target.classList.contains("close-btn") || event.target === window) {
-		  window.classList.remove("active");
+		  if(windowPane.classList) windowPane.classList.remove("active");
 		  document.querySelector(".overlay").classList.remove("active");
+		  console.log(document.querySelector(".overlay").classList);
 		}
-	  });
+  }
+	document.querySelectorAll(".window").forEach(windowPane => {
+	  windowPane.addEventListener("click", (event) => { doCloseEvent(windowPane,event); });
+	  windowPane.addEventListener("touch", (event) => { doCloseEvent(windowPane,event); });
 	});
 
 	// Close panel window when clicking on the overlay
-	document.querySelector(".overlay").addEventListener("click", () => {
-	  document.querySelectorAll(".window").forEach(window => {
-		window.classList.remove("active");
+	function doOverlayClose(){
+	  document.querySelectorAll(".window").forEach(windowPane => {
+		windowPane.classList.remove("active");
 	  });
 	  document.querySelector(".overlay").classList.remove("active");
-	});
+  }
+	document.querySelector(".overlay").addEventListener("click", () => { doOverlayClose(); });
+	document.querySelector(".overlay").addEventListener("touch", () => { doOverlayClose(); });
 
 	// Close panel window and deselect objects when pressing escape
 	$(document).on('keydown', function(event) {

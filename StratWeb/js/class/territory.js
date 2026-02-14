@@ -1,5 +1,5 @@
 // territory.js
-import { DEBUG } from './index.js';
+import { DEBUG } from './class.js';
 
 export class Territory {
   constructor(id, owner, terrainType, coordinates) {

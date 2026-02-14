@@ -1,5 +1,5 @@
 // units.js
-import { DEBUG } from './index.js';
+import { DEBUG } from './class.js';
 import { updateUnitGraphic } from '../engine/renderer.js';
 
 export class Unit {

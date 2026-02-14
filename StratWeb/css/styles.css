@@ -3,15 +3,16 @@
 	src: url('../img/QTMilitary.otf') format('opentype');
 }
 html, body {
-	height: 100%;
 	margin: 0;
 	padding: 0;
+	overflow-y:hidden;
 }
 body {
 	background-image: url('../img/splash.jpg');
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center center;
+	background-attachment:fixed;
 	font-family: Arial, sans-serif;
 	display:flex;
 	flex-direction: column;
@@ -82,4 +83,54 @@ button {
     width: 100%;
     height: auto;
     touch-action: none;
+}
+.box {
+  border:2px solid black;
+  background-color:gray;
+}
+#matchPanel {
+  height:calc(100vh - 64px)
+}
+#searchBox, .box {
+  margin:5px auto;  
+  width:80%;
+}
+#searchBox{
+  position: relative;
+}
+#searchBox::after {
+  content: "\1F50D";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+#searchBox input {
+  border-radius:5px;
+  height:20px;
+  padding:5px;
+  width:calc((100vw - 25%) - 55px);
+  padding-right: 30px; /* Space for the icon */
+}
+.sechead {
+  background-color:lightgray;
+  margin:2px auto;
+  padding:2px;
+}
+.passe {
+  color:dimgray;
+}
+li.separator {
+  margin:5px;
+  list-style-type: none;
+  font-weight:bold;
+  font-variant:small-caps;
+}
+li:not(.separator){
+  cursor:pointer;
+}
+.scrollable{
+  height:calc(100vh - 64px);
+  overflow-y:scroll;
 }

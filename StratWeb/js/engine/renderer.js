@@ -1,5 +1,5 @@
 // js/engine/renderer.js
-import { DEBUG, paths } from './index.js';
+import { DEBUG, paths } from './engine.js';
 
 const canvas = document.getElementById("myCanvas");
 let mapLayer, unitLayer; 
@@ -31,6 +31,8 @@ export function doCanvasResize() {
 	if (DEBUG) console.log("Window size update!");
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
+	var x = "["+canvas.height+"x"+canvas.width+"]";
+	$('#window-size')[0].innerText = x;
 	paper.view.viewSize = new paper.Size(window.innerWidth, window.innerHeight);
 }
 export function drawUnitPoint(x, y, c) {

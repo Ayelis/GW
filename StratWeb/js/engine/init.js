@@ -1,7 +1,7 @@
 // js/engine/init.js
 import {	DEBUG, setupInputHandlers, drawPath,
           player, tool, touch, paths }
-	from './index.js';
+	from './engine.js';
 import {	initRenderer }
 	from './renderer.js';
 

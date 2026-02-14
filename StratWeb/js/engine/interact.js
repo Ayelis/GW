@@ -1,6 +1,6 @@
 import { 	DEBUG, Unit, Territory, touch, units, territories,
 			drawUnitPoint, drawUnitPic }
-	from "./index.js";
+	from "./engine.js";
 //Unit: (id, point, x, y, type, speed, owner, graphic)
 //Territory: (id, owner, terrainType, originCountry, coordinates)
 
@@ -54,8 +54,15 @@ export function toggleSelect(point){ //temporary, select toggling, for testing o
 			if (DEBUG) console.log("Hit!");
 			const territory = hitResult.item.data.territory;
 			if (territory) {
-				if (DEBUG) console.log("Selected territory:", territory.id);
-				pickLand(territory.id); // Select the clicked territory
+				if (DEBUG) console.log("Targeted territory:", territory.id);
+				console.log(touch);
+				if (touch.mode == 1 && touch.selected == 2 && touch.which == territory.id){
+				  if (DEBUG) console.log("WARNING: This territory is already selected!! Deselecting!");				  
+				  unpickAllLands();
+		    	document.dispatchEvent(selectionClearedEvent);
+				}else{
+  				pickLand(territory.id); // Select the clicked territory
+				}
 			}
 		}else{
 			if (DEBUG) console.log("Clicked on ocean or non-selectable area, all lands deselected");
@@ -149,7 +156,7 @@ function pickLand(id){ //picks a land by id
 	// Dispatch the selectionMade event
 	swapPanelLand(id);
 	document.dispatchEvent(selectionMadeEvent);
-	if (DEBUG) console.log("Selected territory:", id);
+	if (DEBUG) console.log("Territory ["+id+"] selected");
 }
 
 //InfoPanel logic

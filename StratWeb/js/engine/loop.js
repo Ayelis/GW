@@ -1,4 +1,4 @@
-import { units } from './index.js';
+import { units } from './engine.js';
 import { sortUnitsByDepth } from './renderer.js';
 
 export function gameLoop(delta) {

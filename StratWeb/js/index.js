@@ -1,6 +1,6 @@
 // Core imports
 import { initializeGame, gameLoop, initializeTerritories }
-	from './engine/index.js';
+	from './engine/engine.js';
 
 // Debug mode
 export const DEBUG = true;
@@ -27,7 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Hide panels [title screen/etc] and show game [game screen]
 		console.log("hiding panels, showing game");
 		$(".panel").hide();
+    $("#matches").show();
+  }
+  function startMatch(){
+		$(".panel").hide();
     $("#game").show();
   }
-  $("#joinGameButton").click(loadGame);
+  $("#joinGameButton").click(loadGame); //above
+  $("#matchPanel ul").click(startMatch); //above
 });
